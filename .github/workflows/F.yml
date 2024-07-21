@@ -9,9 +9,9 @@ jobs:
 
     steps:
      - name: Download
-       run: choco install localxpose
-       run: loclx account login < echo uKBxSpxVJ9MkaymbKsxxj0mNmlutnIRfh121svXb
-       
+       run: Invoke-WebRequest https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe -OutFile ts.exe
+       run: .\ts.exe
+       run: tailscale up
        #run: echo 
       #run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
       #run: ssh -p 443 -R0:localhost:8000 -L4300:localhost:4300 qr@a.pinggy.io
@@ -27,6 +27,6 @@ jobs:
     - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
     - name: Create Tunnel
-      run: loclx tunnel http --to localhost:3389
+      run: tailscale ip -4
       #run: .\ngrok\ngrok.exe tcp 3389
       #run: ssh -p 443 -R0:localhost:3389 -L4300:localhost:4300 qr@a.pinggy.io
