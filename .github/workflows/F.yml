@@ -27,6 +27,6 @@ jobs:
     - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
     - name: Create Tunnel
-      loclx tunnel http --to localhost:3389
+      run: loclx tunnel http --to localhost:3389
       #run: .\ngrok\ngrok.exe tcp 3389
       #run: ssh -p 443 -R0:localhost:3389 -L4300:localhost:4300 qr@a.pinggy.io
