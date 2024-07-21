@@ -8,9 +8,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Download
+ #   - name: Download
       #run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
-      run: npm install -g localtunnel
+      #run: ssh -p 443 -R0:localhost:8000 -L4300:localhost:4300 qr@a.pinggy.io
    # - name: Extract
      # run: Expand-Archive ngrok.zip
    # - name: Auth
@@ -24,4 +24,4 @@ jobs:
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
     - name: Create Tunnel
       #run: .\ngrok\ngrok.exe tcp 3389
-      run: lt --port 3389
+      run: ssh -p 443 -R0:localhost:3389 -L4300:localhost:4300 qr@a.pinggy.io
