@@ -1,23 +1,28 @@
-name: CI
-
-
 on:
   workflow_dispatch:
+    inputs:
+      authcode:
+        description: 'Type CRD Code'
+        required: true
+      pincode:
+        description: 'Set PIN'
+        required: true
 
 jobs:
   build:
-    name: Start Building...
     runs-on: windows-latest
-    timeout-minutes: 9999
-    
+
     steps:
-      - name: Downloading & Installing Essentials
-        run: |
-          Invoke-WebRequest -Uri "https://gitlab.com/chamod12/lm_win-10_github_rdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
-          cmd /c Downloads.bat
-
-      - name: Connect to LiteManager
-        run: cmd /c show.bat
-
-      - name: Time Counter
-        run: cmd /c loop.bat
+    - name: Preparing to Setup.. 
+      run: Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False & {$P = $env:TEMP + '\chromeremotedesktophost.msi'; Invoke-WebRequest 'https://dl.google.com/edgedl/chrome-remote-desktop/chromeremotedesktophost.msi' -OutFile $P; Start-Process $P -Wait; Remove-Item $P} & {$P = $env:TEMP + '\chrome_installer.exe'; Invoke-WebRequest 'https://dl.google.com/chrome/install/latest/chrome_installer.exe' -OutFile $P; Start-Process -FilePath $P -Args '/install' -Verb RunAs -Wait; Remove-Item $P}
+    - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+    - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "Windows@10" -Force)
+    - name: Modify Registry Settings
+      run: |
+        reg add "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System" /v SystemBiosVersion /t REG_DWORD /d 1 /f
+        reg add "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System" /v SystemBiosDate /t REG_DWORD /d 1 /f
+    - name: Starting CRD... 
+      run: ${{ github.event.inputs.authcode }} -pin=${{ github.event.inputs.pincode }}
+    - name: Done! Keep Active. 
+      run: $i = 2147483 do { Write-Host $i Sleep 214748 $i-- } while ($i -gt 0)
+    
