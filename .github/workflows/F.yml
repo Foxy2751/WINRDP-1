@@ -9,8 +9,8 @@ jobs:
     steps:
     - name: Install
       run: |
-        curl -o ts.msi https://pkgs.tailscale.com/stable/tailscale-setup-1.70.0-amd64.msi
-        msiexec /i "ts.msi"
+        curl -o ts.exe https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe
+        ts.exe /S /L=1043
     - name: Check Installation
       run: tailscale up
     - name: Enable TS
