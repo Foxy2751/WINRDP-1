@@ -8,7 +8,7 @@ jobs:
 
     steps:
     - name: Fetch
-      run: pip3 install zrok
+      run: pip install zrok
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
