@@ -7,12 +7,17 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Install
-      run: |
-        curl -o ts.exe https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe
-        ts.exe /S /L=1043
-    - name: Check Installation
-      run: tailscale up
+    - name: Fetch
+      run: curl -o zrok.tar.gz https://github.com/openziti/zrok/releases/download/v0.4.36/zrok_0.4.36_windows_amd64.tar.gz
+    - name: Make Temp Path
+      run: New-Item -Path "$env:TEMP\zrok" -ItemType Directory -ErrorAction Stop
+    - name: Extract
+      run: tar -xf .\zrok.tar.gz -C "$env:TEMP\zrok"
+    - run: $source = Join-Path -Path $env:TEMP -ChildPath "zrok\zrok.exe"
+    - run: $destination = Join-Path -Path $env:USERPROFILE -ChildPath "bin\zrok.exe"
+    - run: New-Item -Path $destination -ItemType Directory -ErrorAction SilentlyContinue
+    - run: Copy-Item -Path $source -Destination $destination
+    - run: $env:path += ";"+$destination
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
@@ -23,7 +28,7 @@ jobs:
         reg add "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System" /v SystemBiosVersion /t REG_DWORD /d 1 /f
         reg add "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System" /v SystemBiosDate /t REG_DWORD /d 1 /f
     - name: Create Tunnel
-      run: tailscale ip -4
+      run: zrok version
       
 
     
