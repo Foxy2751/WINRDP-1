@@ -13,11 +13,13 @@ jobs:
       run: New-Item -Path "$env:TEMP\zrok" -ItemType Directory -ErrorAction Stop
     - name: Extract
       run: tar -xf .\zrok.tar.gz -C "$env:TEMP\zrok"
-    - run: $source = Join-Path -Path $env:TEMP -ChildPath "zrok\zrok.exe"
-    - run: $destination = Join-Path -Path $env:USERPROFILE -ChildPath "bin\zrok.exe"
-    - run: New-Item -Path $destination -ItemType Directory -ErrorAction SilentlyContinue
-    - run: Copy-Item -Path $source -Destination $destination
-    - run: $env:path += ";"+$destination
+    - name: Perform Path Ops
+      run: |
+          $source = Join-Path -Path $env:TEMP -ChildPath "zrok\zrok.exe"
+          $destination = Join-Path -Path $env:USERPROFILE -ChildPath "bin\zrok.exe"
+          New-Item -Path $destination -ItemType Directory -ErrorAction SilentlyContinue
+          Copy-Item -Path $source -Destination $destination
+          $env:path += ";"+$destination
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
