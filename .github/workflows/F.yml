@@ -29,8 +29,12 @@ jobs:
       run: |
         reg add "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System" /v SystemBiosVersion /t REG_DWORD /d 1 /f
         reg add "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System" /v SystemBiosDate /t REG_DWORD /d 1 /f
+    - name: Go to Zrok
+      run: |
+        $destination = Join-Path -Path $env:USERPROFILE -ChildPath "bin"
+        cd $destination
     - name: Create Tunnel
-      run: zrok version
+      run: zrok.exe version
       
 
     
